@@ -65,7 +65,7 @@ kubectl apply -f ServiceAccount.yml
 # Edit kubernetes-dashboard service 
 kubectl edit svc kubernetes-dashboard -n kubernetes-dashboard
 ```
-### Access the Dasboard using token
+### Get token to access Dasboard 
 ```
 # Get token
 kubectl  -n kubernetes-dashboard describe secret $(kubectl  -n kubernetes-dashboard get secret | grep k8s-admin | awk '{print $1}')
