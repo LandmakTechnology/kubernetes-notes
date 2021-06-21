@@ -1,163 +1,201 @@
 
 # Landmark Technologies == Kubernetes Dasboard (UI)
-- 
+# What is the Ingress?
 
-## Step-00: Introduction
-- We can access and manage Kubernetes using Kubernetes Dasboard
-  - Deployment of Kubernetes Dasboard
+The Ingress is a Kubernetes resource that lets you configure an HTTP load balancer for applications running on Kubernetes, represented by one or more [Services](https://kubernetes.io/docs/concepts/services-networking/service/). Such a load balancer is necessary to deliver those applications to clients outside of the Kubernetes cluster.
 
-## Step-01: Certificates 
-- We shall create dashboard.key and dashboard.csr files for HTTPS'
-- We shall create self signed dashboard.key & dashboard.csr
-### create dashboard.key and dashboard.csr open openssl
-mkdir $HOME/certs
-cd certs/
-openssl genrsa -out dashboard.key 2048
-openssl req -sha256 -new -key dashboard.key -out dashboard.csr
-openssl x509 -req -sha256 -days 365 -in dashboard.csr -signkey dashboard.key -out dashboard.crt
-```
-# Create the require namespace and deploy the dashboard
-kubectl create ns kubernetes-dashboard
-kubectl -n kubernetes-dashboard create secret generic kubernetes-dashboard-certs --from-file=$HOME/certs
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta7/aio/deploy/recommended.yaml
+The Ingress resource supports the following features:
+* **Content-based routing**:
+    * *Host-based routing*. For example, routing requests with the host header `foo.example.com` to one group of services and the host header `bar.example.com` to another group.
+    * *Path-based routing*. For example, routing requests with the URI that starts with `/serviceA` to service A and requests with the URI that starts with `/serviceB` to service B.
 
-# verify if the pods is running
-kubectl get all -n kubernetes-dashboard
+See the [Ingress User Guide](http://kubernetes.io/docs/user-guide/ingress/) to learn more about the Ingress resource.
+
+## What is the Ingress Controller?
+
+The Ingress controller is an application that runs in a cluster and configures an HTTP load balancer according to Ingress resources. The load balancer can be a software load balancer running in the cluster or a hardware or cloud load balancer running externally. Different load balancers require different Ingress controller implementations. 
+
+In the case of NGINX, the Ingress controller is deployed in a pod along with the load balancer.
+
+
+# Installing the Ingress Controller In Amazom EKS using Helm Charts
+# Install helm a package manager for kubernetes
 ```
-### verify if the kubernetes-dashboard pods are  running
+$ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
+$ chmod 700 get_helm.sh
+$ ./get_helm.sh
 ```
-# Verify  
-kubectl get pod -n kubernetes-dashboard
+
+## 1. Add helm charts for Nginx Ingress into a server where you have kubectl and helm
+
 ```
-## Step-02: Create an k8s-admin serviceAccount to access the dashboard
-### ServiceAccount for k8s-admin
-```yml
-# ServiceAccount.yml
-apiVersion: v1
-kind: ServiceAccount
+$ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+$ helm repo update
+```
+## 2. Deploy nginx-ingress using helm chart
+ # NB. This will create nginx-ingress namespace, clusterRole, ClusterRoleBinding and more
+```
+ $ helm install nginx-ingress ingress-nginx/ingress-nginx
+```
+## 3. Verify nginx-ingress is running
+
+```
+ $ helm ls
+ $ kubectl get all -n ingress-nginx
+```
+
+## 4.  How Ingress Controller can be deployed
+
+We include two options for deploying the Ingress controller:
+ * *Deployment*. Use a Deployment if you plan to dynamically change the number of Ingress controller replicas.
+ * *DaemonSet*. Use a DaemonSet for deploying the Ingress controller on every node or a subset of nodes.
+
+
+## 5. Check that the Ingress Controller is Running
+
+Check that the Ingress Controller is Running
+Run the following command to make sure that the Ingress controller pods are running:
+```
+$ kubectl get pods --namespace=ingress-nginx
+```
+## 6. Get Access to the Ingress Controller
+
+ **If you created a daemonset**, ports 80 and 443 of the Ingress controller container are mapped to the same ports of the node where the container is running. To access the Ingress controller, use those ports and an IP address of any node of the cluster where the Ingress controller is running.
+
+### 6.1 Service with the Type LoadBalancer
+
+A service with the type **LoadBalancer** will be created as well. Kubernetes will allocate and configure a cloud load balancer for load balancing the Ingress controller pods.
+
+**For AWS, run:**
+```
+$ kubectl apply -f service/loadbalancer-aws-elb.yaml
+```
+
+To get the DNS name of the ELB, run:
+```
+$ kubectl describe svc ingress-nginx --namespace=ingress-nginx
+```
+
+`OR`
+
+```
+kubectl get svc -n ingress-nginx 
+```
+
+You can resolve the DNS name into an IP address using `nslookup`:
+```
+$ nslookup <dns-name>
+```
+
+# 7. Ingress Resource:
+
+### 5.1 Define path based or host based routing rules for your services.
+
+### Single DNS Sample with host and servcie place holders
+``` yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
 metadata:
-  name: k8s-admin
-  namespace: kubernetes-dashboard
----
-# Create ClusterRoleBinding for the k8s-admin
-apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
+  name: ingress-resource-1
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: <DomainNameOne>
+    http:
+      paths:
+      # Default Backend (Root /)
+      - backend:
+          serviceName: <serviceName>
+          servicePort: 80
+``` 
+
+### Multiple DNS Sample with hosts and servcies place holders
+``` yaml
+apiVersion: extensions/v1beta1
+kind: Ingress
 metadata:
-  name: k8s-admin
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: cluster-admin
-subjects:
-- kind: ServiceAccount
-  name: k8s-admin
-  namespace: kubernetes-dashboard
-```
-### create service Account
-```
-# create service Account
-kubectl apply -f ServiceAccount.yml 
-```
-### Edit kubernetes-dashboard service to NodePort
-- **Observation:** kubernetes-dashboard default service is ClusterIP 
-```
-# Edit kubernetes-dashboard service 
-kubectl get all -n kubernetes-dashboard
-```
-### Access the Dasboard using token
-```
-# Get token
-kubectl  -n kubernetes-dashboard describe secret $(kubectl  -n kubernetes-dashboard get secret | grep k8s-admin | awk '{print $1}')
-```
+  name: ingress-resource-1
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: <DomainNameOne>
+    http:
+      paths:
+      - backend:
+          serviceName: <serviceNameOne>
+          servicePort: 80
+  - host: <DomainNameTwo>
+    http:
+      paths:
+      - backend:
+          serviceName: <serviceNamTwo>
+          servicePort: 80	
+``` 		  
 
-### Access the kubernetes-dashboard using Public IP
-```
-# Get NodePort
-kubectl get svc kubernetes-dashboard
-Observation: Make a note of port which starts with 3 (Example: 80:3xxxx/TCP). Capture the port 3xxxx and use it in application URL below. 
+### Path Based Routing Example
+``` yaml		  
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-resource-1
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: springboot.example.com
+    http:
+      paths:
+      # Default Path(/)
+      - backend:
+          serviceName: springboot
+          servicePort: 80
+      - path: /java-web-app
+        backend:
+          serviceName: javawebapp
+          servicePort: 80	
+``` 
+`Make sure you have services created in K8's with type ClusterIP for your applications. Which your are defining in Ingress Resource`.
 
-# kubernetes-dashboard URL
-https://<worker-node-public-ip>:<Node-Port>
-```
+## Uninstall the Ingress Controller
 
+ Delete the `ingress-nginx` namespace to uninstall the Ingress controller along with all the auxiliary resources that were created:
+ ```
+ $ kubectl delete namespace ingress-nginx
+ ```
 
-### Verify Rollout History of a Deployment
-- **Observation:** We have the rollout history, so we can switch back to older revisions using 
-revision history available to us.  
+ **Note**: If RBAC is enabled on your cluster and you completed step 2, you will need to remove the ClusterRole and ClusterRoleBinding created in that step:
 
-```
-# Check the Rollout History of a Deployment
-kubectl rollout history deployment/<Deployment-Name>
-kubectl rollout history deployment/my-first-deployment  
-```
+ ```
+ $ kubectl delete clusterrole ingress-nginx
+ $ kubectl delete clusterrolebinding ingress-nginx
+ ```
 
-### Access the Application using Public IP
-- We should see `Application Version:V2` whenever we access the application in browser
-```
-# Get NodePort
-kubectl get svc
-Observation: Make a note of port which starts with 3 (Example: 80:3xxxx/TCP). Capture the port 3xxxx and use it in application URL below. 
+## Ingress with Https Using Self Signed Certificates:
 
-# Get Public IP of Worker Nodes
-kubectl get nodes -o wide
-Observation: Make a note of "EXTERNAL-IP" if your Kubernetes cluster is setup on AWS EKS.
+### Generate self signed certificates
+```
+$ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -out mylandmark-ingress-tls.crt -keyout mylandmark-ingress-tls.key -subj "/CN=javawebapp.javawebapp.landmarkfintech.com/O=mylandmark-ingress-tls"
 
-# Application URL
-http://<worker-node-public-ip>:<Node-Port>
-```
+# Create secret for with your certificate .key & .crt file
 
-
-## Step-02: Update the Application from V3 to V4 using "Edit Deployment" Option
-### Edit Deployment
+$ kubectl create secret tls mylandmark-ingress-tls --namespace default --key mylandmark-ingress-tls.key --cert mylandmark-ingress-tls.crt
 ```
-# Edit Deployment
-kubectl edit deployment/<Deployment-Name> --record=true
-kubectl edit deployment/my-first-deployment --record=true
+### Mention tls/ssl(certificate) details in ingress
 ```
-
-```yml
-# Change From 2.0.0
-    spec:
-      containers:
-      - image: mylandmarktech/hello:2
-
-# Change To 3.0.0
-    spec:
-      containers:
-      - image: mylandmarktech/hello:3
-```
-
-### Verify Rollout Status
-- **Observation:** Rollout happens in a rolling update model, so no downtime.
-```
-# Verify Rollout Status 
-kubectl rollout status deployment/my-first-deployment
-```
-### Verify Replicasets
-- **Observation:**  We should see 3 ReplicaSets now, as we have updated our application to 3rd version 3.0.0
-```
-# Verify ReplicaSet and Pods
-kubectl get rs
-kubectl get po
-```
-### Verify Rollout History
-```
-# Check the Rollout History of a Deployment
-kubectl rollout history deployment/<Deployment-Name>
-kubectl rollout history deployment/my-first-deployment   
-```
-
-### Access the Application using Public IP
-- We should see `Application Version:V3` whenever we access the application in browser
-```
-# Get NodePort
-kubectl get svc
-Observation: Make a note of port which starts with 3 (Example: 80:3xxxx/TCP). Capture the port 3xxxx and use it in application URL below. 
-
-# Get Public IP of Worker Nodes
-kubectl get nodes -o wide
-Observation: Make a note of "EXTERNAL-IP" if your Kubernetes cluster is setup on AWS EKS.
-
-# Application URL
-http://<worker-node-public-ip>:<Node-Port>
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-resource-1
+spec:
+  tls:
+  - hosts:
+     - javawebapp.landmarkfintech.com
+     secretName: mylandmarktech-ingress-tls
+  ingressClassName: nginx
+  rules:
+  - host: javawebapp.landmarkfintech.com
+    http:
+      paths:
+      - backend:
+          serviceName: javawebappservice
+          servicePort: 80
 ```
