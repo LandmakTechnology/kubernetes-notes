@@ -190,11 +190,11 @@ metadata:
 spec:
   tls:
   - hosts:
-     - javawebapp.landmarkfintech.com
+     - app.landmarkfintech.com
      secretName: mylandmarktech-ingress-tls
   ingressClassName: nginx
   rules:
-  - host: javawebapp.landmarkfintech.com
+  - host: app.landmarkfintech.com
     http:
       paths:
       - backend:
