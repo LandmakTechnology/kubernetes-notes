@@ -23,7 +23,9 @@ In the case of NGINX, the Ingress controller is deployed in a pod along with the
 ```
 $ curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3
 $ chmod 700 get_helm.sh
+$ sh get_helm.sh
 $ ./get_helm.sh
+
 ```
 
 ## 1. Add helm charts for Nginx Ingress into a server where you have kubectl and helm
