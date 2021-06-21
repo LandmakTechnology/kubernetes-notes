@@ -167,19 +167,19 @@ spec:
  **Note**: If RBAC is enabled on your cluster and you completed step 2, you will need to remove the ClusterRole and ClusterRoleBinding created in that step:
 
  ```
- $ kubectl delete clusterrole ingress-nginx
- $ kubectl delete clusterrolebinding ingress-nginx
+  kubectl delete clusterrole ingress-nginx
+  kubectl delete clusterrolebinding ingress-nginx
  ```
 
 ## Ingress with Https Using Self Signed Certificates:
 
 ### Generate self signed certificates
 ```
-$ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -out mylandmark-ingress-tls.crt -keyout mylandmark-ingress-tls.key -subj "/CN=javawebapp.javawebapp.landmarkfintech.com/O=mylandmark-ingress-tls"
+ openssl req -x509 -nodes -days 365 -newkey rsa:2048 -out mylandmark-ingress-tls.crt -keyout mylandmark-ingress-tls.key -subj "/CN=javawebapp.javawebapp.landmarkfintech.com/O=mylandmark-ingress-tls"
 
 # Create secret for with your certificate .key & .crt file
 
-$ kubectl create secret tls mylandmark-ingress-tls --namespace default --key mylandmark-ingress-tls.key --cert mylandmark-ingress-tls.crt
+ kubectl create secret tls mylandmark-ingress-tls --namespace default --key mylandmark-ingress-tls.key --cert mylandmark-ingress-tls.crt
 ```
 ### Mention tls/ssl(certificate) details in ingress
 ```
@@ -190,14 +190,16 @@ metadata:
 spec:
   tls:
   - hosts:
-     - app.landmarkfintech.com
-     secretName: mylandmarktech-ingress-tls
+    - app.landmarkfintech.com
+    secretName: mylandmarktech-ingress-tls
   ingressClassName: nginx
   rules:
   - host: app.landmarkfintech.com
     http:
       paths:
       - backend:
-          serviceName: javawebappservice
+          serviceName: springapp
           servicePort: 80
+
+
 ```
