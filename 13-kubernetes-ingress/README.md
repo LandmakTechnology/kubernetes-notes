@@ -31,8 +31,8 @@ In the case of NGINX, the Ingress controller is deployed in a pod along with the
 ## 1. Add helm charts for Nginx Ingress into a server where you have kubectl and helm
 
 ```
-$ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
-$ helm repo update
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
 ```
 ## 2. Deploy nginx-ingress using helm chart
  # NB. This will create nginx-ingress namespace, clusterRole, ClusterRoleBinding and more
@@ -42,8 +42,8 @@ $ helm repo update
 ## 3. Verify nginx-ingress is running
 
 ```
- $ helm ls
- $ kubectl get all -n ingress-nginx
+ helm ls
+ kubectl get all -n ingress-nginx
 ```
 
 ## 4.  How Ingress Controller can be deployed
@@ -58,7 +58,7 @@ We include two options for deploying the Ingress controller:
 Check that the Ingress Controller is Running
 Run the following command to make sure that the Ingress controller pods are running:
 ```
-$ kubectl get pods --namespace=ingress-nginx
+ kubectl get pods --namespace=ingress-nginx
 ```
 ## 6. Get Access to the Ingress Controller
 
@@ -70,7 +70,7 @@ A service with the type **LoadBalancer** will be created as well. Kubernetes wil
 
 **For AWS, run:**
 ```
-$ kubectl apply -f service/loadbalancer-aws-elb.yaml
+kubectl apply -f service/loadbalancer-aws-elb.yaml
 ```
 
 To get the DNS name of the ELB, run:
@@ -86,7 +86,7 @@ kubectl get svc -n ingress-nginx
 
 You can resolve the DNS name into an IP address using `nslookup`:
 ```
-$ nslookup <dns-name>
+nslookup <dns-name>
 ```
 
 # 7. Ingress Resource:
