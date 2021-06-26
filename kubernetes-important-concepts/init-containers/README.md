@@ -22,7 +22,7 @@
       initContainers:
         - name: init-db
           image: busybox:1.31
-          command: ['sh', '-c', 'echo -e "Checking for the availability of MySQL Server deployment"; while ! nc -z mysql 3306; do sleep 1; printf "-"; done; echo -e "  >> MySQL DB Server has started";']
+          command: ['sh', '-c', 'echo -e "Checking for the availability of mongo Server deployment"; while ! nc -z mongo 27017; do sleep 1; printf "-"; done; echo -e "  >> mongo DB Server has started";']
 ```
 
 
@@ -41,7 +41,7 @@ kubectl get pods -w
 kubectl describe pod <usermgmt-microservice-xxxxxx>
 
 # Access Application Health Status Page
-http://<WorkerNode-Public-IP>:31231/usermgmt/health-status
+http://<WorkerNode-Public-IP>:31231
 ```
 
 ## Step-04: Clean-Up
