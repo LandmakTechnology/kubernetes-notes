@@ -10,7 +10,7 @@
               command:
                 - /bin/sh
                 - -c
-                - nc -z localhost 8095
+                - nc -z localhost 8080
             initialDelaySeconds: 60
             periodSeconds: 10
 ```
@@ -19,8 +19,9 @@
 ```yml
           readinessProbe:
             httpGet:
-              path: /usermgmt/health-status
-              port: 8095
+              #path: /usermgmt/health-status
+              path: /
+              port: 8080
             initialDelaySeconds: 60
             periodSeconds: 10     
 ```
@@ -43,7 +44,7 @@ kubectl describe pod <usermgmt-microservice-xxxxxx>
 # Access Application Health Status Page
 http://<WorkerNode-Public-IP>:31231/usermgmt/health-status
 ```
-- **Observation:** User Management Microservice pod witll not be in READY state to accept traffic until it completes the `initialDelaySeconds=60seconds`. 
+- **Observation:** SpringApp User Management Microservice pod witll not be in READY state to accept traffic until it completes the `initialDelaySeconds=60seconds`. 
 
 ## Step-05: Clean-Up
 - Delete all k8s objects created as part of this section
