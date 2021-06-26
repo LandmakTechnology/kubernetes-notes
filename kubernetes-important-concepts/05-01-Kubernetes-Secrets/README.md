@@ -4,7 +4,7 @@
 - Kubernetes Secrets let you store and manage sensitive information, such as passwords, OAuth tokens, and ssh keys. 
 - Storing confidential information in a Secret is safer and more flexible than putting it directly in a Pod definition or in a container image. 
 
-## Step-02: Create Secret for MySQL DB Password
+## Step-02: Create Secret for mongo DB Password
 ### 
 ```
 # Mac
@@ -17,28 +17,28 @@ echo -n 'dbpassword11' | base64
 apiVersion: v1
 kind: Secret
 metadata:
-  name: mysql-db-password
+  name: mongo-db-password
 #type: Opaque means that from kubernetes's point of view the contents of this Secret is unstructured.
 #It can contain arbitrary key-value pairs. 
 type: Opaque
 data:
-  # Output of echo -n 'dbpassword11' | base64
-  db-password: ZGJwYXNzd29yZDEx
+  # Output of "echo -n 'devdb@123' | base64"
+  db-password: ZGV2ZGJAMTIz
 ```
-## Step-03: Update secret in MySQL Deployment for DB Password
+## Step-03: Update secret in mongodb Deployment for DB Password
 ```yml
           env:
-            - name: MYSQL_ROOT_PASSWORD
+            - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: mysql-db-password
+                  name: mongo-db-password
                   key: db-password
 ```
 
-## Step-04: Update secret in UMS Deployment
-- UMS means User Management Microservice
+## Step-04: Update secret in springapp Deployment
+- UMS means springapp User Management Microservice
 ```yml
-            - name: DB_PASSWORD
+            - name: MONGO_DB_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: mysql-db-password
@@ -54,7 +54,7 @@ kubectl apply -f kube-manifests/
 kubectl get pods
 
 # Access Application Health Status Page
-http://<WorkerNode-Public-IP>:31231/usermgmt/health-status
+http://<WorkerNode-Public-IP>:nodePort
 ```
 
 ## Step-06: Clean-Up
