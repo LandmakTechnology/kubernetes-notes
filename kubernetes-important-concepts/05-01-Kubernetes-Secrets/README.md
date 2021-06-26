@@ -1,6 +1,8 @@
-# Kubernetes - Secrets
+# Kubernetes - ConfigMaps and Secrets
 
 ## Step-01: Introduction
+- ConfigMaps are use to pass additional configurations needed to orchestarte containers inclusing environmental variables. Examples is hostname or password.
+- ConfigMaps pass values in plain text key:value pairs
 - Kubernetes Secrets let you store and manage sensitive information, such as passwords, OAuth tokens, and ssh keys. 
 - Storing confidential information in a Secret is safer and more flexible than putting it directly in a Pod definition or in a container image. 
 
@@ -14,6 +16,15 @@ echo -n 'dbpassword11' | base64
 ```
 ### Create Kubernetes Secrets manifest
 ```yml
+kind: ConfigMap 
+apiVersion: v1 
+metadata:
+  name: mongo-configmap 
+data:
+  # Configuration values can be set as key-value properties
+  db-password: devdb@123
+  db-hostname: devdb
+ ---
 apiVersion: v1
 kind: Secret
 metadata:
@@ -28,6 +39,11 @@ data:
 ## Step-03: Update secret in mongodb Deployment for DB Password
 ```yml
           env:
+            - name: MONGO_DB_USERNAME
+              valueFrom: 
+                configMapKeyRef 
+                  name: mongo-configmap 
+                  key: db-username
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
