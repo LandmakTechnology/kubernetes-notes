@@ -38,6 +38,11 @@ helm repo update
 ```
   helm install nginx-ingress ingress-nginx/ingress-nginx
 ```
+## 2b. UnDeploy nginx-ingress using helm
+ # NB. This will delete nginx-ingress and all associated services
+```
+  helm uninstall nginx-ingress 
+```
 ## 3. Verify nginx-ingress is running
 
 ```
