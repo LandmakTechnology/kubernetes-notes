@@ -37,7 +37,7 @@ helm repo update
 ## 2. Deploy nginx-ingress using helm chart
  # NB. This will create nginx-ingress namespace, clusterRole, ClusterRoleBinding and more
 ```
- $ helm install nginx-ingress ingress-nginx/ingress-nginx
+  helm install nginx-ingress ingress-nginx/ingress-nginx
 ```
 ## 3. Verify nginx-ingress is running
 
@@ -75,7 +75,7 @@ kubectl apply -f service/loadbalancer-aws-elb.yaml
 
 To get the DNS name of the ELB, run:
 ```
-$ kubectl describe svc ingress-nginx --namespace=ingress-nginx
+ kubectl describe svc ingress-nginx --namespace=ingress-nginx
 ```
 
 `OR`
