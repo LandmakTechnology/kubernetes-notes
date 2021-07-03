@@ -43,6 +43,7 @@ helm repo update
 
 ```
  helm ls
+ kubectl get all
  kubectl get all -n ingress-nginx
 ```
 
