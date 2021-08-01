@@ -7,7 +7,7 @@ variable "cluster-name" {
   type    = string
 }
 variable "key_pair_name" {
-  default = "ekskey"
+  default = "key22"
 }
 variable "eks_node_instance_type" {
   default = "t2.medium"
