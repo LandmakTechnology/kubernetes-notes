@@ -3,12 +3,12 @@
 #
 
 variable "cluster-name" {
-  default = "eks-landmark"
+  default = "eks-landmark-24testing"
   type    = string
 }
 variable "key_pair_name" {
-  default = "key22"
+  default = "key24"
 }
 variable "eks_node_instance_type" {
-  default = "t2.medium"
+  default = "t2.micro"
 }
