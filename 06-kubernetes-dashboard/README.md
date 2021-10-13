@@ -14,6 +14,7 @@
 ```
 # create dashboard.key and dashboard.csr open openssl 
 #Create the require namespace and deploy the dashboard
+
 mkdir $HOME/certs
 cd certs/
 openssl genrsa -out dashboard.key 2048
