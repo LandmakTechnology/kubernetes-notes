@@ -205,6 +205,30 @@ spec:
       - backend:
           serviceName: springapp
           servicePort: 80
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress-resource-1
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: landmarkfintech.com
+    secretName: mylandmarktech-ingress-tls
+    http:
+      paths:
+      # Default Path(/)
+      - backend:
+          serviceName: springapp
+          servicePort: 80
+      - path: /app
+        backend:
+          serviceName: webapp
+          servicePort: 80
+      - path: /java-web-app
+        backend:
+          serviceName: javawebapp
+          servicePort: 80
 ```
 
 ### Alternatively Deploy Ingress in kubernetes using Manifest Files
