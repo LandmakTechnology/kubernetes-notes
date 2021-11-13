@@ -205,6 +205,8 @@ spec:
       - backend:
           serviceName: springapp
           servicePort: 80
+```
 
-
+### Alternatively Deploy Ingress in kubernetes using Manifest Files
+https://github.com/LandmakTechnology/kubernestes-ingress
 ```
