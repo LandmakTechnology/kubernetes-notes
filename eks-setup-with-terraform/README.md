@@ -19,9 +19,9 @@
 
 ### Install Terraform
 ```sh
-$ sudo adduser eksadmin
-$ sudo echo "eksadmin  ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/eksadmin
-$ sudo su - eksadmin
+sudo adduser eksadmin
+sudo echo "eksadmin  ALL=(ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/eksadmin
+sudo su - eksadmin
 ```
 ``` sh
 $ git clone https://github.com/mylandmarktechs/eks-terraform-setup
@@ -49,7 +49,7 @@ $ export PATH=$PATH:/usr/local/bin
 $ vi .bashrc
    export PATH="$PATH:/usr/local/bin"
 # Source .bashrc to reflect for current session
-$ source ~/.bashrc  
+ source ~/.bashrc  
 # run the scripts https://github.com/mylandmarktechs/eks-terraform-setup/blob/main/terraform-install.sh
 ```
 #### Clone terraform scripts
