@@ -49,7 +49,8 @@ kubectl create secret docker-registry dhcred \
 ```
 ## Create po with image from private registry 
  ``` yml
-  apiVersion: v1
+  
+apiVersion: v1
 kind: Pod
 metadata:
   name: nodeapp
