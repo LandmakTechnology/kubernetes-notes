@@ -43,9 +43,26 @@ kubectl create secret docker-registry regcred \
 --docker-username=<your-name> --docker-password=<your-pword>
 ``sh
 kubectl create secret docker-registry dhcred \
---docker-server=docker.io --docker-username=mylandmarktech \
+--docker-server=docker.io \
+--docker-username=mylandmarktech \
 --docker-password=Mercy0000 
 ```
+## Create po with image from private registry 
+ ``` yml
+  apiVersion: v1
+kind: Pod
+metadata:
+  name: nodeapp
+  labels: nodeapp
+spec:
+  containers:
+  - name: node-app
+    image: mylandmarktech/nodejs-fe-app
+    ports:
+    - containerPort: 9981
+  imagePullSecrets:
+  - name: regcred
+  ```
 ## Step-03: Update secret in mongodb Deployment for DB Password
 ```yml
           env:
