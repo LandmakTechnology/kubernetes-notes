@@ -1,7 +1,7 @@
 # Kubernetes - ConfigMaps and Secrets
 
 ## Step-01: Introduction
-- ConfigMaps are use to pass additional configurations needed to orchestarte containers inclusing environmental variables. Examples is hostname or password.
+- ConfigMaps are use to pass additional configurations needed to orchestarte containers including environmental variables. Examples is hostname or password.
 - ConfigMaps pass values in plain text key:value pairs
 - Kubernetes Secrets let you store and manage sensitive information, such as passwords, OAuth tokens, and ssh keys. 
 - Storing confidential information in a Secret is safer and more flexible than putting it directly in a Pod definition or in a container image. 
@@ -36,6 +36,16 @@ data:
   # Output of "echo -n 'devdb@123' | base64"
   db-password: ZGV2ZGJAMTIz
 ```
+## create secret to aws a docker-hub rivate image rtegistry
+# 
+kubectl create secret docker-registry regcred \
+--docker-server=<your-registry-server> \
+--docker-username=<your-name> --docker-password=<your-pword>
+``sh
+kubectl create secret docker-registry dhcred \
+--docker-server=docker.io --docker-username=mylandmarktech \
+--docker-password=Mercy0000 
+```
 ## Step-03: Update secret in mongodb Deployment for DB Password
 ```yml
           env:
@@ -50,7 +60,6 @@ data:
                   name: mongo-db-password
                   key: db-password
 ```
-
 ## Step-04: Update secret in springapp Deployment
 - UMS means springapp User Management Microservice
 ```yml
