@@ -36,7 +36,7 @@ data:
   # Output of "echo -n 'devdb@123' | base64"
   db-password: ZGV2ZGJAMTIz
 ```
-## create secret to aws a docker-hub rivate image rtegistry
+## create secret to access a docker-hub private  registry
 # 
 kubectl create secret docker-registry regcred \
 --docker-server=<your-registry-server> \
