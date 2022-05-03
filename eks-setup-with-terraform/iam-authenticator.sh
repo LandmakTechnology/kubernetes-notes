@@ -5,7 +5,7 @@ openssl sha1 -sha256 aws-iam-authenticator
 chmod +x ./aws-iam-authenticator
 mkdir -p $HOME/bin && cp ./aws-iam-authenticator $HOME/bin/aws-iam-authenticator && export PATH=$PATH:$HOME/bin
 echo 'export PATH=$PATH:$HOME/bin' >> ~/.bashrc
-mono myprogram.exe
-apt install mono-runtime
 sudo apt install mono-runtime
-sudo apt install binfmt-support qemu qemu-user-static
+mono myprogram.exe
+sudo apt install mono-runtime -y
+sudo apt install binfmt-support qemu qemu-user-static -y
