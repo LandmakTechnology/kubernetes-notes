@@ -30,25 +30,25 @@ In the case of NGINX, the Ingress controller is deployed in a pod along with the
 ## 1. Add helm charts for Nginx Ingress into a server where you have kubectl and helm
 
 ```
-helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo add nginx https://helm.nginx.com/stable
 helm repo update
 ```
 ## 2. Deploy nginx-ingress using helm chart
  # NB. This will create nginx-ingress namespace, clusterRole, ClusterRoleBinding and more
 ```
-  helm install nginx-ingress ingress-nginx/ingress-nginx
+  helm install nginx nginx/nginx-ingress
 ```
 ## 2b. UnDeploy nginx-ingress using helm
  # NB. This will delete nginx-ingress and all associated resources and services
 ```
-  helm uninstall nginx-ingress 
+  helm uninstall nginx
 ```
 ## 3. Verify nginx-ingress is running
 
 ```
  helm ls
  kubectl get all
- kubectl get all -n ingress-nginx
+ kubectl get svc
 ```
 
 ## 4.  How Ingress Controller can be deployed
