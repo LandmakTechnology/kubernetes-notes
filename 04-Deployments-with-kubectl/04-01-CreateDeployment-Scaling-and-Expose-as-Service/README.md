@@ -2,7 +2,7 @@
 
 ## Step-01: Introduction to Deployments
 - What is a Deployment?
-- What all we can do using Deployment?
+- What we can do using Deployment?
 - Create a Deployment
 - Scale the Deployment
 - Expose the Deployment as a Service
