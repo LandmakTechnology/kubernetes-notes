@@ -42,7 +42,7 @@ metadata:
   namespace: kubernetes-dashboard
 ---
 # Create ClusterRoleBinding for the k8s-admin
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: k8s-admin
