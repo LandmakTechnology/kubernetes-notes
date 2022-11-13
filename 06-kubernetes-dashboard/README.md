@@ -42,7 +42,7 @@ metadata:
   namespace: kubernetes-dashboard
 ---
 # Create ClusterRoleBinding for the k8s-admin
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: k8s-admin
@@ -75,7 +75,7 @@ kubectl  -n kubernetes-dashboard describe secret $(kubectl  -n kubernetes-dashbo
 ### Access the kubernetes-dashboard using Public IP
 ```
 # Get NodePort
-kubectl get svc kubernetes-dashboard
+kubectl get svc -n kubernetes-dashboard
 Observation: Make a note of port which starts with 3 (Example: 80:3xxxx/TCP). Capture the port 3xxxx and use it in application URL below. 
 
 # kubernetes-dashboard URL
